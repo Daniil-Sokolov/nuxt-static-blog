@@ -24,8 +24,8 @@ export default {
       return 'slide-up'
     }
     if(to.name=='index'){
-      console.log("Slug sliding down")
-      return 'slide-down'
+      console.log("Slug sliding up")
+      return 'slide-up'
     }
     return 'animation' in to.params ? to.params.animation : 'slide-up'
   },
