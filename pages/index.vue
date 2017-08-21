@@ -21,6 +21,14 @@
 import Logo from '~/components/Logo.vue'
 
 export default {
+  transition(from, to){
+    if(from && from.name=='slug') {
+      console.log("index sliding down")
+      return 'slide-down'
+    }
+    console.log("INDEX sliding down")
+    return 'slide-up'
+  },
   components: {
     Logo
   }

@@ -3,10 +3,10 @@
     <div class="content">
       <p><nuxt-link to="/">Home</nuxt-link></p>
 
-      <nuxt-link v-if="previous" :to="{ path: '/'+previous, query: { t: 'l'}}">&lt; Prev</nuxt-link>
+      <nuxt-link v-if="previous" :to="{ name: 'slug', params: { slug: previous, animation: 'slide-right' }}">&lt; Prev</nuxt-link>
       <a v-else class="disabled">&lt; Prev</a>
       <span>{{ page }}/{{ totalPages }}</span>
-      <nuxt-link v-if="next" :to="{ path: '/'+next }">Next &gt;</nuxt-link>
+      <nuxt-link v-if="next" :to="{ name: 'slug', params: { slug: next, animation: 'slide-left' }}">Next &gt;</nuxt-link>
       <a v-else class="disabled">Next &gt;</a>
       <h1>{{ title }}</h1>
     </div>
@@ -16,20 +16,25 @@
 
 <script>
 
-console.log()
-
 export default {
 
   transition(to, from) {
-    if (!from) return 'slide-right'
-    return 't' in to.query ? 'slide-right' : 'slide-left'
+    if(!from || from.name=='index'){
+      console.log("Slug sliding up")
+      return 'slide-up'
+    }
+    if(to.name=='index'){
+      console.log("Slug sliding down")
+      return 'slide-down'
+    }
+    return 'animation' in to.params ? to.params.animation : 'slide-up'
   },
   methods: {
     handleKeyPress(e){
       if(e.key === "ArrowRight" && this.next){
-        this.$router.push('/'+this.next)
+        this.$router.push({ name: 'slug', params: { slug: this.next, animation: 'slide-left' }})
       }else if(e.key === "ArrowLeft" && this.previous){
-        this.$router.push('/'+this.previous)
+        this.$router.push({ name: 'slug', params: { slug: this.previous, animation: 'slide-right' }})
       }
     }
   },
