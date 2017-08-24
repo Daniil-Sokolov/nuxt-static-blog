@@ -8,7 +8,7 @@ const createStore = () => {
     },
     actions: {
       async nuxtServerInit({ commit }, { req }) {
-        const response = await axios.get('http://localhost/wp-json/wp/v2/posts')
+        const response = await axios.get('http://localhost:3001/api/posts')
         commit("SET_POSTS", response.data)
       }
     },

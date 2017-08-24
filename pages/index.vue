@@ -10,7 +10,7 @@
       </h2>
       <ul>
         <li v-for="post in $store.state.posts">
-          <nuxt-link v-bind:key="post.id" :to="'/'+post.slug">{{ post.title.rendered }}</nuxt-link>
+          <nuxt-link v-bind:key="post._id" :to="'/'+post.slug">{{ post.title }}</nuxt-link>
         </li>
       </ul>
     </div>

@@ -69,22 +69,12 @@ export default {
     return ({
       previous,
       next,
-      title: post.title.rendered,
-      content: post.content.rendered
+      title: post.title,
+      content: post.content
     })
   }
 }
 </script>
 
 <style scoped> 
-  .article {
-    max-width: 1100px;
-    margin:auto;
-  }
-  .content{
-    width: 100%;
-    max-width: 770px;
-    padding:15px;
-    margin: auto;
-  }
 </style>
