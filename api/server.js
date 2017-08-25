@@ -13,7 +13,17 @@ const upload = multer({ dest: './public/uploads/' })
 const Post = require('./models/Post')
 const Category = require('./models/Category')
 
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+}
+
 const app = express()
+
+app.use(allowCrossDomain)
 
 const path = require('path')
 
@@ -49,7 +59,8 @@ app.get('/api/categories', (req, res) => {
 })
 
 app.post('/api/categories', (req, res) => {
-
+  console.log(req.body)
+  if(!'name' in req.body) return res.status(404).json({ success: false, message: err})
   const data = new Category({
     name: req.body.name,
     slug: slugify(req.body.name),
@@ -83,7 +94,7 @@ app.post('/api/image', upload.array('image'), (req, res) => {
 })
 
 function slugify(s){
-  if(!typeof s === "string") return s
+  if(!typeof s === "string" || !s) return s
   return s.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s/g, "-")
 }
 
