@@ -16,7 +16,7 @@
 <script>
 
 import hljs from 'highlight.js/lib/highlight'
-import 'highlight.js/styles/monokai.css'
+import 'highlight.js/styles/pojoaque.css'
 ['javascript', 'python', 'bash', 'css', 'lua'].forEach((langName) => {
   const langModule = require(`highlight.js/lib/languages/${langName}`)
   hljs.registerLanguage(langName, langModule)
