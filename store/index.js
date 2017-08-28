@@ -46,7 +46,8 @@ const createStore = () => {
     actions: {
       async nuxtServerInit({ commit }, { req }) {
         const response = await get('/posts')
-        commit('SET_POSTS', response.data)
+        const data = await response.json()
+        commit('SET_POSTS', data)
       },
       getCategories() {
         return get('/categories')
@@ -54,6 +55,10 @@ const createStore = () => {
       saveCategory(context, body) {
         console.log(body)
         return post('/categories', body)
+      },
+      savePost(context, body) {
+        console.log(body)
+        return post('/posts', body)
       }
     },
     mutations: {

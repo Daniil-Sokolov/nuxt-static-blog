@@ -76,25 +76,31 @@ export default {
   asyncData(context, resolve) {
     return context.store.dispatch('getCategories')
       .then(r => r.json())
-      .then(res => resolve(null, { categories: res.data }))
-      .catch(e => resolve(null, { error: e }))
+      .then(res => resolve(null, { categories: res }))
+      .catch(e => resolve({ statusCode: 404, message: 'Cannot connect to db' }))
   },
   methods: {
+    resetPost() {
+      this.formData = {
+        title: '',
+        subtitle: '',
+        sections: [
+          { width: 'normal', content: '' }
+        ],
+        category: '',
+        published: true
+      }
+    },
     createCategory() {
       const newCategory = this.newCategory
-      if (newCategory.name === '') {
-        return
-      }
-      const body = {
-        name: newCategory.name,
-        description: newCategory.description,
-        banner: newCategory.banner
-      }
+      if (newCategory.name === '') return
+      const body = { ...newCategory }
       this.$store.dispatch('saveCategory', body)
         .then(r => r.json())
         .then(res => {
-          console.log(res)
-          this.categories.push(res.data)
+          this.categories.push(res)
+          this.formData.category = res._id
+          this.toggleNewCategory = false
         })
         .catch(e => {
           console.warn(e)
@@ -108,20 +114,43 @@ export default {
       this.formData.sections.splice(index, 1)
     },
     createPost() {
-      let body = this.formData
+      const formData = this.formData
+      let body = { ...formData }
       body.sections = body.sections.filter(s => s.content !== '')
-      console.warn('TODO SAVE POST')
-      /*
-      fetch("http://localhost:3001/api/posts", {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers:{
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        }
-      }).then(r => r.json())
-        .then(console.log) */
+      this.$store.dispatch('savePost', body)
+        .then(r => r.json())
+        .then(res => {
+          this.resetPost()
+          console.log(res)
+        })
+        .catch(e => {
+          console.warn(e)
+          this.error = e
+        })
     }
   }
 }
 </script>
+
+<style scoped>
+input,textarea{
+  display: block;
+  width: 100%;
+}
+textarea{ height: 100px }
+.preview{width:70%}
+.input{width: 30%; border-left: 2px solid #ddd; min-height: 100vh;}
+.col2{
+  vertical-align: top;
+  display:inline-block;
+  padding:20px;
+}
+section{
+  border-left:1px solid #ccc;
+  border-right: 1px solid #ccc 
+}
+article{
+  border-left:3px solid #ccc;
+  border-right: 3px solid #ccc
+}
+</style>

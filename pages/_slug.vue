@@ -1,20 +1,26 @@
 <template>
   <div class="article">
-    <div class="content">
+    <section class="header">
       <p><nuxt-link to="/">Home</nuxt-link></p>
 
       <nuxt-link v-if="previous" :to="{ name: 'slug', params: { slug: previous, animation: 'slide-right' }}">&lt; Prev</nuxt-link>
       <a v-else class="disabled">&lt; Prev</a>
-      <span>{{ page }}/{{ totalPages }}</span>
       <nuxt-link v-if="next" :to="{ name: 'slug', params: { slug: next, animation: 'slide-left' }}">Next &gt;</nuxt-link>
       <a v-else class="disabled">Next &gt;</a>
       <h1>{{ title }}</h1>
-    </div>
-    <div class="content" v-html="content"></div>
+    </section>
+    <section :class="section.width" v-for="section in sections" v-html="section.content"></section>
   </div>
 </template>
 
 <script>
+
+import hljs from 'highlight.js/lib/highlight'
+import 'highlight.js/styles/monokai.css'
+['javascript', 'python', 'bash', 'css', 'lua'].forEach((langName) => {
+  const langModule = require(`highlight.js/lib/languages/${langName}`)
+  hljs.registerLanguage(langName, langModule)
+})
 
 export default {
 
@@ -50,9 +56,14 @@ export default {
   },
   mounted: function() {
     window.addEventListener('keypress', this.handleKeyPress)
+    document.querySelectorAll('code').forEach(function(e) {
+      console.log('highlighting ', e)
+      hljs.highlightBlock(e)
+    })
   },
   beforeDestroy: function() {
     window.removeEventListener('keypress', this.handleKeyPress)
+    console.log('DESTROYED')
   },
   async asyncData(context) {
     const slug = context.params.slug
@@ -70,7 +81,7 @@ export default {
       previous,
       next,
       title: post.title,
-      content: post.content
+      sections: post.sections
     })
   }
 }
