@@ -5,6 +5,11 @@
         <section>
           <h1>{{ formData.title }}</h1>
           <h2>{{ formData.subtitle }}</h2>
+          <hr>
+          <div class='post-meta'>
+          {{ new Date().toLocaleDateString() }} <nuxt-link class="novisited pull-right" :to="'#'">{{ formData.category.name }}</nuxt-link>
+
+          </div>
         </section>
         <section :class="formData.sections[index].width" v-bind:key="index" v-for="(section, index) in formData.sections" v-html="formData.sections[index].content">
         </section>
@@ -73,11 +78,8 @@ export default {
     categories: [],
     error: ''
   }),
-  asyncData(context, resolve) {
-    return context.store.dispatch('getCategories')
-      .then(r => r.json())
-      .then(res => resolve(null, { categories: res }))
-      .catch(e => resolve({ statusCode: 404, message: 'Cannot connect to db' }))
+  asyncData(context) {
+    return { categories: context.store.state.categories }
   },
   methods: {
     resetPost() {

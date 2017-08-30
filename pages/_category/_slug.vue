@@ -1,15 +1,23 @@
 <template>
-  <div class="article">
+  <div class="transition">
+    <div class='backlink'><nuxt-link class="novisited" :to="'/'">Back home</nuxt-link></div>
     <section class="header">
-      <p><nuxt-link to="/">Home</nuxt-link></p>
 
-      <nuxt-link v-if="previous" :to="{ name: 'slug', params: { slug: previous, animation: 'slide-right' }}">&lt; Prev</nuxt-link>
-      <a v-else class="disabled">&lt; Prev</a>
-      <nuxt-link v-if="next" :to="{ name: 'slug', params: { slug: next, animation: 'slide-left' }}">Next &gt;</nuxt-link>
-      <a v-else class="disabled">Next &gt;</a>
-      <h1>{{ title }}</h1>
+      <nuxt-link class="prevlink novisited" v-if="previous" :to="{ name: 'category-slug', params: { slug: previous, animation: 'slide-right' }}">&lt; Prev</nuxt-link>
+      <a v-else class="disabled prevlink">&lt; Prev</a>
+      <nuxt-link class="nextlink novisited" v-if="next" :to="{ name: 'category-slug', params: { slug: next, animation: 'slide-left' }}">Next &gt;</nuxt-link>
+      <a v-else class="disabled nextlink">Next &gt;</a>
+
+      <h1>{{ post.title }}</h1>
+      <h2>{{ post.subtitle }}</h2>
+      <hr>
+
+      <div class='post-meta'>
+      {{ new Date(post.created).toLocaleDateString() }} <nuxt-link class="novisited pull-right" :to="'/'+post.category.slug">{{ post.category.name }}</nuxt-link>
+
+      </div>
     </section>
-    <section :class="section.width" v-for="section in sections" v-html="section.content"></section>
+    <section :class="section.width" v-for="section in post.sections" v-html="section.content"></section>
   </div>
 </template>
 
@@ -37,7 +45,7 @@ export default {
     handleKeyPress(e) {
       if (e.key === 'ArrowRight' && this.next) {
         this.$router.push({
-          name: 'slug',
+          name: 'category-slug',
           params: {
             slug: this.next,
             animation: 'slide-left'
@@ -45,7 +53,7 @@ export default {
         })
       } else if (e.key === 'ArrowLeft' && this.previous) {
         this.$router.push({
-          name: 'slug',
+          name: 'category-slug',
           params: {
             slug: this.previous,
             animation: 'slide-right'
@@ -66,26 +74,28 @@ export default {
     console.log('DESTROYED')
   },
   async asyncData(context) {
+    console.log(context, this)
     const slug = context.params.slug
-    const index = context.store.state.posts.reduce((index, p, i) => {
+    const category = context.params.category
+    const posts = context.store.state.posts.filter(p => p.category.slug === category)
+    const index = posts.reduce((index, p, i) => {
       if (p.slug === slug) return i
       return index
     }, -1)
     if (index === -1) return
 
-    const post = context.store.state.posts[index]
-    const previous = index > 0 ? context.store.state.posts[index - 1].slug : null
-    const next = context.store.state.posts.length > index + 1
-      ? context.store.state.posts[index + 1].slug : null
+    const post = posts[index]
+    const previous = index > 0 ? posts[index - 1].slug : null
+    const next = posts.length > index + 1
+      ? posts[index + 1].slug : null
     return ({
       previous,
       next,
-      title: post.title,
-      sections: post.sections
+      post: post
     })
   }
 }
 </script>
 
-<style scoped> 
+<style scoped>
 </style>

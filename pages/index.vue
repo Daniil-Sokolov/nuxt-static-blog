@@ -1,25 +1,25 @@
 <template>
-  <section class="container">
-    <div>
-      <logo/>
-      <h1 class="title">
-        Welcome
-      </h1>
-      <h2 class="subtitle">
-        This is my blog about my exchange in Japan
-      </h2>
-      <ul>
-        <li v-for="post in $store.state.posts">
-          <nuxt-link v-bind:key="post._id" :to="'/'+post.slug">{{ post.title }}</nuxt-link>
-        </li>
-      </ul>
-    </div>
-  </section>
+  <div>
+    <h1>
+      Jonniek blog
+    </h1>
+    <section>
+      
+      <h2>Categories</h2>
+      <hr>
+      <div class="category transition" v-for="category in categories">
+        <img v-if="category.banner!==''" :src="category.banner" alt=''>
+        
+        <div class="title"><nuxt-link :to="'/'+category.slug">
+          <h3>{{ category.name }}</h3>
+        </nuxt-link></div>
+        <p>{{ category.description }}</p>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-
 export default {
   transition(from, to) {
     if (from && from.name === 'slug') {
@@ -27,35 +27,71 @@ export default {
     }
     return 'slide-down'
   },
-  components: {
-    Logo
+  async asyncData(context) {
+    const categories = context.store.state.posts.reduce((categories, post) => {
+      let unique = true
+      for (let index in categories) {
+        if (categories[index].slug === post.category.slug) {
+          unique = false
+        }
+      }
+      if (unique) { categories.push(post.category) }
+      return categories
+    }, [])
+    return { categories }
   }
 }
 </script>
 
-<style>
-.container{
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-.title{
+<style scoped>
+h1{
   display: block;
-  font-weight: 300;
-  font-size: 100px;
+  text-align: center;
+  font-size: 50px;
+  font-size: 10vw;
+  font-weight: bold;
   color: #35495e;
   letter-spacing: 1px;
 }
-.subtitle{
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
+@media (min-width: 1100px){
+  h1{
+    font-size: 110px;
+  }
 }
-.links{
-  padding-top: 15px;
+h2{
+  color: #35495e;
+  text-align: center
+}
+.title{
+  text-align: center;
+  margin:10px 0;
+  font-size: 20px;
+}
+.title a{
+  display: inline-block;
+}
+.category{
+  display: inline-block;
+  width: 33%;
+  vertical-align: top;
+  padding: 10px 15px;
+}
+.category p{
+  text-align: center; 
+  max-width: 350px;
+  margin:auto;
+}
+@media (max-width: 780px){
+  .category{
+    width: 100%;
+  }
+}
+@media (max-width: 580px){
+  .category{
+    width: 100%;
+  }
+  h1{
+    font-size: 40px;
+  }
 }
 </style>

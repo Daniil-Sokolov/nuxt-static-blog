@@ -48,22 +48,24 @@ const createStore = () => {
         const response = await get('/posts')
         const data = await response.json()
         commit('SET_POSTS', data)
-      },
-      getCategories() {
-        return get('/categories')
+
+        const catres = await get('/categories')
+        const catdata = await catres.json()
+        commit('SET_CATEGORIES', catdata)
       },
       saveCategory(context, body) {
-        console.log(body)
         return post('/categories', body)
       },
       savePost(context, body) {
-        console.log(body)
         return post('/posts', body)
       }
     },
     mutations: {
       SET_POSTS(state, data) {
         state.posts = data
+      },
+      SET_CATEGORIES(state, data) {
+        state.categories = data
       }
     }
   })
