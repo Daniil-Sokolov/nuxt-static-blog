@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
-const db = mongoose.connection
 const Schema = mongoose.Schema
 
 const CategorySchema = new Schema({
@@ -12,18 +10,18 @@ const CategorySchema = new Schema({
 
 const Category = module.exports = mongoose.model('Category', CategorySchema)
 
-module.exports.createCategory = function(data, callback){
+module.exports.createCategory = function(data, callback) {
   data.save(callback)
 }
 
-module.exports.removeCategory = function(id, callback){
+module.exports.removeCategory = function(id, callback) {
   Category.remove({ _id: id }, callback)
 }
 
-module.exports.getCategory = function(id, callback){
+module.exports.getCategory = function(id, callback) {
   Category.findOne({ _id: id }, callback)
 }
 
-module.exports.getCategories = function(callback){
+module.exports.getCategories = function(callback) {
   Category.find(callback)
 }

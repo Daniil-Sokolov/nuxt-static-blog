@@ -5,9 +5,9 @@
   "author": "donmaiq",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "node ./server/server.js",
     "build": "nuxt build",
-    "start": "nuxt start",
+    "start": "cross-env NODE_ENV=production node ./server/server.js",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint",
@@ -15,7 +15,15 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
+    "cross-env": "^5.0.5",
+    "express": "^4.15.4",
+    "express-session": "^1.15.5",
     "highlight.js": "^9.12.0",
+    "jsonwebtoken": "^7.4.3",
+    "mongodb": "^2.2.31",
+    "mongoose": "^4.11.7",
     "node-fetch": "^1.7.2",
     "nuxt": "^1.0.0-rc3"
   },

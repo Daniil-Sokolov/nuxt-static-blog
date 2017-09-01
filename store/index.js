@@ -1,27 +1,30 @@
+import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'node-fetch'
+import fetch from 'node-fetch'
 
-const BASE_URL = 'http://localhost:3001/api'
+Vue.use(Vuex)
+
+const BASE_URL = 'http://localhost:3000/api'
 const api = (url) => BASE_URL + url
 
-const get = (url, query) => axios(api(url) + stringifyQuery(query))
-const post = (url, body, query) => fetcher(api(url), 'POST', body)
-// const put = (url, body, query) => fetcher(api(url), 'PUT', body)
-// const del = (url, body, query) => fetcher(api(url), 'DELETE', body)
+const get = (url, query) => fetch(api(url), 'GET', null, query)
+const post = (url, body, query) => fetcher(api(url), 'POST', body, query)
+// const put = (url, body, query) => fetcher(api(url), 'PUT', body, query)
+// const del = (url, body, query) => fetcher(api(url), 'DELETE', body, query)
 
 const fetcher = (url, method, body, query) => {
   const finalurl = query ? url + stringifyQuery(query) : url
-  const payload = {
+  let payload = {
     method,
-    body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
-    },
-    data: {}
+    }
   }
-  console.log(payload)
-  return axios(finalurl, payload)
+  if (body) {
+    payload.body = JSON.stringify(body)
+  }
+  return fetch(finalurl, payload)
 }
 
 const stringifyQuery = query => {
@@ -41,7 +44,8 @@ const createStore = () => {
   return new Vuex.Store({
     state: {
       posts: [],
-      categories: []
+      categories: [],
+      token: ''
     },
     actions: {
       async nuxtServerInit({ commit }, { req }) {
@@ -52,12 +56,31 @@ const createStore = () => {
         const catres = await get('/categories')
         const catdata = await catres.json()
         commit('SET_CATEGORIES', catdata)
+
+        if (req.cookies && req.cookies.token) {
+          commit('SET_TOKEN', req.cookies.token)
+        }
       },
       saveCategory(context, body) {
         return post('/categories', body)
       },
       savePost(context, body) {
         return post('/posts', body)
+      },
+      login({ commit }, { password }) {
+        return post('/login', { password })
+      },
+      verifyToken({ commit }, { token }) {
+        return post('/verifytoken', { token })
+          .then(res => res.json())
+          .then(res => {
+            console.log(res)
+            return res.success
+          })
+          .catch(e => {
+            console.warn(e)
+            return false
+          })
       }
     },
     mutations: {
@@ -66,6 +89,16 @@ const createStore = () => {
       },
       SET_CATEGORIES(state, data) {
         state.categories = data
+      },
+      SET_TOKEN_COOKIE: function(state, token) {
+        if (typeof document !== 'undefined') {
+          let exp = new Date()
+          exp.setDate(exp.getDate() + 14)
+          document.cookie = `token=${token};expires=${exp.toUTCString()}`
+        }
+      },
+      SET_TOKEN: function(state, token) {
+        state.token = token
       }
     }
   })

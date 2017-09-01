@@ -15,6 +15,8 @@
         </nuxt-link></div>
         <p>{{ category.description }}</p>
       </div>
+      <nuxt-link :to="'/login'">login
+        </nuxt-link>
     </section>
   </div>
 </template>

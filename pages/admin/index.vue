@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div>
+      <nuxt-link :to="'/'">home</nuxt-link>
+    </div>
     <div class="preview col2">
       <article>
         <section>
@@ -63,6 +66,7 @@
 <script>
 
 export default {
+  middleware: 'auth',
   data: () => ({
     formData: {
       title: '',
