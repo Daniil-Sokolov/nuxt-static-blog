@@ -15,8 +15,7 @@ export default {
   },
   beforeCreate: function() {
     if (this.$store.state.token) {
-      console.log(this.$store.state.token)
-      this.$store.dispatch('verifyToken', { token: this.$store.state.token })
+      this.$store.dispatch('verifyToken', this.$store.state.token)
         .then(valid => {
           if (valid) this.$router.push({ path: '/admin' })
         })
@@ -25,16 +24,14 @@ export default {
   methods: {
     login() {
       this.error = ''
-      this.$store.dispatch('login', { password: this.password })
-        .then(res => res.json())
+      this.$store.dispatch('login', this.password)
         .then(res => {
-          if (res.success) {
-            this.$store.commit('SET_TOKEN', res.token)
-            this.$store.commit('SET_TOKEN_COOKIE', res.token)
-            this.$router.push({ path: '/admin' })
-          } else {
-            this.error = res.error
-          }
+          console.log(res)
+          this.$store.commit('SET_TOKEN', res.data.token)
+          this.$store.commit('SET_TOKEN_COOKIE', res.data.token)
+          this.$router.push({ path: '/admin' })
+        }).catch(e => {
+          this.error = e.response.data.error
         })
     }
   }

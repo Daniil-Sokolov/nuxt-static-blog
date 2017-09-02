@@ -1,43 +1,25 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import fetch from 'node-fetch'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
 const BASE_URL = 'http://localhost:3000/api'
-const api = (url) => BASE_URL + url
 
-const get = (url, query) => fetch(api(url), 'GET', null, query)
-const post = (url, body, query) => fetcher(api(url), 'POST', body, query)
-// const put = (url, body, query) => fetcher(api(url), 'PUT', body, query)
-// const del = (url, body, query) => fetcher(api(url), 'DELETE', body, query)
+const get = (url, params) => fetcher(url, 'GET', null, params)
+const post = (url, data, params) => fetcher(url, 'POST', data, params)
+// const put = (url, data, params) => fetcher(url, 'PUT', data, params)
+// const del = (url, data, params) => fetcher(url, 'DELETE', data, params)
 
-const fetcher = (url, method, body, query) => {
-  const finalurl = query ? url + stringifyQuery(query) : url
-  let payload = {
+const fetcher = (url, method, data, params) => {
+  let config = {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    }
+    data,
+    params,
+    url: BASE_URL + url
   }
-  if (body) {
-    payload.body = JSON.stringify(body)
-  }
-  return fetch(finalurl, payload)
-}
-
-const stringifyQuery = query => {
-  let output = '?'
-  if (typeof query !== 'object' || Object.keys(query).length === 0) return ''
-
-  for (let key in query) {
-    if (query[key] !== null) {
-      if (output !== '?') output += '&'
-      output += `${key}=${encodeURIComponent(query[key])}`
-    }
-  }
-  return output
+  console.log(config)
+  return axios(config)
 }
 
 const createStore = () => {
@@ -49,12 +31,10 @@ const createStore = () => {
     },
     actions: {
       async nuxtServerInit({ commit }, { req }) {
-        const response = await get('/posts')
-        const data = await response.json()
+        const { data } = await get('/posts')
         commit('SET_POSTS', data)
 
-        const catres = await get('/categories')
-        const catdata = await catres.json()
+        const { catdata } = await get('/categories')
         commit('SET_CATEGORIES', catdata)
 
         if (req.cookies && req.cookies.token) {
@@ -67,18 +47,18 @@ const createStore = () => {
       savePost(context, body) {
         return post('/posts', body)
       },
-      login({ commit }, { password }) {
+      login({ commit }, password) {
         return post('/login', { password })
       },
-      verifyToken({ commit }, { token }) {
+      logout({ commit }) {
+        // TODO LOGOUT
+      },
+      verifyToken({ commit }, token) {
         return post('/verifytoken', { token })
-          .then(res => res.json())
           .then(res => {
-            console.log(res)
-            return res.success
+            return true
           })
           .catch(e => {
-            console.warn(e)
             return false
           })
       }

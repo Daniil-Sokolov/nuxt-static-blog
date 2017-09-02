@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="front">
     <h1>
       Jonniek blog
     </h1>
@@ -15,16 +15,19 @@
         </nuxt-link></div>
         <p>{{ category.description }}</p>
       </div>
-      <nuxt-link :to="'/login'">login
-        </nuxt-link>
     </section>
+    <footer>
+      <section>
+        <nuxt-link :to="'/admin'">admin</nuxt-link>
+      </section>
+    </footer>
   </div>
 </template>
 
 <script>
 export default {
   transition(from, to) {
-    if (from && from.name === 'slug') {
+    if (from && from.name === 'category') {
       return 'slide-up'
     }
     return 'slide-down'

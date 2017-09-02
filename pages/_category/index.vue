@@ -25,7 +25,7 @@ export default {
     if (to.name === 'index') {
       return 'slide-up'
     }
-    return 'animation' in to.params ? to.params.animation : 'slide-up'
+    return 'slide-down'
   },
   async asyncData(context) {
     const categorySlug = context.params.category

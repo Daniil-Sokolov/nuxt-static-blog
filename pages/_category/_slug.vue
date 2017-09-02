@@ -1,21 +1,32 @@
 <template>
   <div class="transition">
-    <div class='backlink'><nuxt-link class="novisited" :to="'/'">Back home</nuxt-link></div>
+    <div class='backlink'>
+      <nuxt-link
+        class="novisited"
+        :to="'/'+post.category.slug"
+      >Back to {{ post.category.name}}</nuxt-link>
+    </div>
     <section class="header">
 
-      <nuxt-link class="prevlink novisited" v-if="previous" :to="{ name: 'category-slug', params: { slug: previous, animation: 'slide-right' }}">&lt; Prev</nuxt-link>
+      <nuxt-link
+        class="prevlink novisited"
+        v-if="previous"
+        :to="{ name: 'category-slug', params: { slug: previous, animation: 'slide-right' }}"
+      >&lt; Prev</nuxt-link>
       <a v-else class="disabled prevlink">&lt; Prev</a>
-      <nuxt-link class="nextlink novisited" v-if="next" :to="{ name: 'category-slug', params: { slug: next, animation: 'slide-left' }}">Next &gt;</nuxt-link>
+
+      <nuxt-link
+        class="nextlink novisited"
+        v-if="next"
+        :to="{ name: 'category-slug', params: { slug: next, animation: 'slide-left' }}"
+      >Next &gt;</nuxt-link>
       <a v-else class="disabled nextlink">Next &gt;</a>
 
       <h1>{{ post.title }}</h1>
       <h2>{{ post.subtitle }}</h2>
       <hr>
 
-      <div class='post-meta'>
-      {{ new Date(post.created).toLocaleDateString() }} <nuxt-link class="novisited pull-right" :to="'/'+post.category.slug">{{ post.category.name }}</nuxt-link>
-
-      </div>
+      <div class='post-meta'>{{ new Date(post.created).toLocaleDateString() }}</div>
     </section>
     <section :class="section.width" v-for="section in post.sections" v-html="section.content"></section>
   </div>
@@ -31,15 +42,14 @@ import 'highlight.js/styles/pojoaque.css'
 })
 
 export default {
-
   transition(to, from) {
     if (!from || from.name === 'index') {
       return 'slide-up'
     }
-    if (to.name === 'index') {
-      return 'slide-up'
+    if (to.name === 'category' || to.name === 'index') {
+      return 'slide-down'
     }
-    return 'animation' in to.params ? to.params.animation : 'slide-up'
+    return 'slide-up'
   },
   methods: {
     handleKeyPress(e) {
