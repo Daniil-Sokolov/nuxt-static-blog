@@ -12,13 +12,12 @@ const post = (url, data, params) => fetcher(url, 'POST', data, params)
 // const del = (url, data, params) => fetcher(url, 'DELETE', data, params)
 
 const fetcher = (url, method, data, params) => {
-  let config = {
+  const config = {
     method,
     data,
     params,
     url: BASE_URL + url
   }
-  console.log(config)
   return axios(config)
 }
 
@@ -31,13 +30,13 @@ const createStore = () => {
     },
     actions: {
       async nuxtServerInit({ commit }, { req }) {
-        const { data } = await get('/posts')
-        commit('SET_POSTS', data)
+        const post_res = await get('/posts')
+        commit('SET_POSTS', post_res.data)
 
-        const { catdata } = await get('/categories')
-        commit('SET_CATEGORIES', catdata)
+        let cat_res = await get('/categories')
+        commit('SET_CATEGORIES', cat_res.data)
 
-        if (req.cookies && req.cookies.token) {
+        if (req && req.cookies && req.cookies.token) {
           commit('SET_TOKEN', req.cookies.token)
         }
       },

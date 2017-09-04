@@ -30,14 +30,14 @@ const createToken = (content, expiresIn = '14d') => {
   })
 }
 
-const authRoute = (req, res) => {
+const authRoute = (req, res, next) => {
   const { token } = req.cookies
   if (token) {
     jwt.verify(token, superSecret, function(err, decoded) {
       if (err) {
         return res.status(422).json({ success: false, error: 'Invalid authentication token.' })
       } else {
-        res.next()
+        next()
       }
     })
   } else {
@@ -54,7 +54,6 @@ const slugify = (s) => {
 }
 
 app.get('/api/posts', (req, res) => {
-  console.log(req.cookies.token)
   Post.getPosts(function(err, response) {
     if (err) return res.status(404).json({ success: false, message: err })
     res.json(response)

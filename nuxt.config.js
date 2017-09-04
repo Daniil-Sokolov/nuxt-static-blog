@@ -23,6 +23,12 @@ module.exports = {
     '~/assets/animations.css',
     '~/assets/blog.css'
   ],
+  generate: {
+    routes: [
+      '/japan/hello-world',
+      '/japan'
+    ]
+  },
   /*
   ** Build configuration
   */

@@ -18,6 +18,7 @@
         </section>
       </article>
     </div><div class="input col2">
+      <div class="error">{{ error }}</div>
       <div class="formfield">
         <label>Category
         <select v-if="!toggleNewCategory" v-model="formData.category">
@@ -83,7 +84,7 @@ export default {
     error: ''
   }),
   asyncData(context) {
-    return { categories: context.store.state.categories }
+    return { categories: context.store.state.categories || [] }
   },
   methods: {
     resetPost() {
@@ -97,21 +98,21 @@ export default {
         published: true
       }
     },
-    createCategory() {
+    async createCategory() {
       const newCategory = this.newCategory
       if (newCategory.name === '') return
       const body = { ...newCategory }
-      this.$store.dispatch('saveCategory', body)
-        .then(r => r.json())
-        .then(res => {
-          this.categories.push(res)
-          this.formData.category = res._id
-          this.toggleNewCategory = false
-        })
-        .catch(e => {
-          console.warn(e)
-          this.error = e
-        })
+
+      try{
+        console.log(this)
+        const { data } = this.$store.dispatch('saveCategory', body)
+        this.categories.push(data)
+        this.formData.category = data._id
+        this.toggleNewCategory = false
+      } catch (e) {
+        console.warn(e)
+        // this.error = e.response.data.error
+      }
     },
     addSection() {
       this.formData.sections.push({ width: 'normal', content: '' })
@@ -124,7 +125,6 @@ export default {
       let body = { ...formData }
       body.sections = body.sections.filter(s => s.content !== '')
       this.$store.dispatch('savePost', body)
-        .then(r => r.json())
         .then(res => {
           this.resetPost()
           console.log(res)
@@ -139,6 +139,9 @@ export default {
 </script>
 
 <style scoped>
+.error {
+  color:red;
+}
 input,textarea{
   display: block;
   width: 100%;
