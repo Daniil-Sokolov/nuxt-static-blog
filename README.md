@@ -1,22 +1,20 @@
-# homepage
+## Jonniek homepage
 
-> Nuxt.js project
+A nuxt.js project that generates static blog content and deploys to github pages. Database is stored locally for NeDB.
 
-## Build Setup
-
-``` bash
-# install dependencies
-$ npm install # Or yarn install
-
-# serve with hot reload at localhost:3000
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm start
-
-# generate static project
-$ npm run generate
+### Installation
+```
+npm install
 ```
 
-For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
+### Content management
+```
+npm run dev
+```
+localhost:3000/admin
+
+### Deploying
+This will deploy to github pages
+```
+npm run deploy
+```

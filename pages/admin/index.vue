@@ -34,6 +34,8 @@
         <div v-if="toggleNewCategory">
           <label>Category name
           <input v-model="newCategory.name"></label>
+          <label>Category banner image name
+          <input v-model="newCategory.banner"></label>
           <label>Category description
           <input v-model="newCategory.description"></label>
           <button v-on:click="createCategory">Create</button>
@@ -67,7 +69,6 @@
 <script>
 
 export default {
-  middleware: 'auth',
   data: () => ({
     formData: {
       title: '',
@@ -98,21 +99,17 @@ export default {
         published: true
       }
     },
-    async createCategory() {
+    createCategory() {
       const newCategory = this.newCategory
       if (newCategory.name === '') return
       const body = { ...newCategory }
-
-      try{
-        console.log(this)
-        const { data } = this.$store.dispatch('saveCategory', body)
-        this.categories.push(data)
-        this.formData.category = data._id
+      this.$store.dispatch('saveCategory', body)
+      .then(res => {
+        console.log(res)
+        this.categories.push(res.data)
+        this.formData.category = res.data._id
         this.toggleNewCategory = false
-      } catch (e) {
-        console.warn(e)
-        // this.error = e.response.data.error
-      }
+      }).catch(console.warn)
     },
     addSection() {
       this.formData.sections.push({ width: 'normal', content: '' })
@@ -123,6 +120,10 @@ export default {
     createPost() {
       const formData = this.formData
       let body = { ...formData }
+      if (body.category === '') {
+        this.error = 'Select or create a category'
+        return
+      }
       body.sections = body.sections.filter(s => s.content !== '')
       this.$store.dispatch('savePost', body)
         .then(res => {

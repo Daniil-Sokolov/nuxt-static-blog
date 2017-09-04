@@ -25,41 +25,33 @@ const createStore = () => {
   return new Vuex.Store({
     state: {
       posts: [],
-      categories: [],
-      token: ''
+      categories: []
     },
     actions: {
-      async nuxtServerInit({ commit }, { req }) {
-        const post_res = await get('/posts')
-        commit('SET_POSTS', post_res.data)
+      nuxtServerInit({ commit }, { req }) {
+        return axios.all([get('/posts'), get('/categories')])
+        .then(axios.spread(function(posts_res, category_res){
+          let pdata = posts_res.data
+          let cdata = category_res.data
 
-        let cat_res = await get('/categories')
-        commit('SET_CATEGORIES', cat_res.data)
+          let categories = {}
+          for (let index in cdata) {
+            categories[cdata[index]._id] = cdata[index]
+          }
 
-        if (req && req.cookies && req.cookies.token) {
-          commit('SET_TOKEN', req.cookies.token)
-        }
+          for (let index in pdata) {
+            pdata[index].category = categories[pdata[index].category]
+          }
+          commit('SET_POSTS', pdata)
+          commit('SET_CATEGORIES', cdata)
+        }))
+
       },
       saveCategory(context, body) {
         return post('/categories', body)
       },
       savePost(context, body) {
         return post('/posts', body)
-      },
-      login({ commit }, password) {
-        return post('/login', { password })
-      },
-      logout({ commit }) {
-        // TODO LOGOUT
-      },
-      verifyToken({ commit }, token) {
-        return post('/verifytoken', { token })
-          .then(res => {
-            return true
-          })
-          .catch(e => {
-            return false
-          })
       }
     },
     mutations: {
@@ -68,16 +60,6 @@ const createStore = () => {
       },
       SET_CATEGORIES(state, data) {
         state.categories = data
-      },
-      SET_TOKEN_COOKIE: function(state, token) {
-        if (typeof document !== 'undefined') {
-          let exp = new Date()
-          exp.setDate(exp.getDate() + 14)
-          document.cookie = `token=${token};expires=${exp.toUTCString()}`
-        }
-      },
-      SET_TOKEN: function(state, token) {
-        state.token = token
       }
     }
   })

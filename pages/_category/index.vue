@@ -1,11 +1,15 @@
 <template>
-  <div class="transition">
+  <div class="transition main">
     <div class='backlink'><nuxt-link class="novisited" :to="'/'">Back home</nuxt-link></div>
     <h1 class="big">{{ category.name }}</h1>
+    <img class="mainbanner" :src="'/'+category.banner" alt="">
     <p class="description">{{ category.description }}</p>
     <section>
       <hr>
       <div class="article transition" v-for="post in posts">
+        <nuxt-link :to="'/'+post.category.slug+'/'+post.slug">
+          <img :src="'/'+post.banner" alt=''>
+        </nuxt-link>
         <div class="title"><nuxt-link :to="'/'+post.category.slug+'/'+post.slug">
           <h3>{{ post.title }}</h3>
         </nuxt-link></div>
@@ -29,7 +33,7 @@ export default {
   },
   async asyncData(context) {
     const categorySlug = context.params.category
-    const posts = context.store.state.posts.filter(p => { console.log(p.category.slug); return p.category.slug === categorySlug })
+    const posts = context.store.state.posts.filter(p =>  p.category.slug === categorySlug)
     const category = posts[0].category
     return {
       category,
@@ -39,7 +43,13 @@ export default {
 }
 </script>
 
-<style scoped> 
+<style scoped>
+.main {
+  text-align: center;
+}
+.section {
+  text-align: left;
+}
 h1{
   display: block;
   text-align: center;
@@ -48,6 +58,7 @@ h1{
   font-weight: bold;
   color: #35495e;
   letter-spacing: 1px;
+  margin:20px 0;
 }
 @media (min-width: 1100px){
   h1{
@@ -60,7 +71,7 @@ h2{
 }
 .description{
   max-width: 400px;
-  margin:0 auto 60px auto;
+  margin:30px auto 60px auto;
   text-align: center;
 }
 .title{

@@ -5,6 +5,7 @@ const PostSchema = new Schema({
   title: String,
   slug: String,
   subtitle: String,
+  banner: String,
   created: { type: Date, default: Date.now },
   category: { type: Schema.ObjectId, ref: 'Category' },
   published: Boolean,

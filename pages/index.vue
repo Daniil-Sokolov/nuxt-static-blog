@@ -8,19 +8,15 @@
       <h2>Categories</h2>
       <hr>
       <div class="category transition" v-for="category in categories">
-        <img v-if="category.banner!==''" :src="category.banner" alt=''>
-        
+        <nuxt-link :to="'/'+category.slug">
+          <img :src="'/'+category.banner" alt="">
+        </nuxt-link>
         <div class="title"><nuxt-link :to="'/'+category.slug">
           <h3>{{ category.name }}</h3>
         </nuxt-link></div>
         <p>{{ category.description }}</p>
       </div>
     </section>
-    <footer>
-      <section>
-        <nuxt-link :to="'/admin'">admin</nuxt-link>
-      </section>
-    </footer>
   </div>
 </template>
 
@@ -34,6 +30,7 @@ export default {
   },
   async asyncData(context) {
     const categories = context.store.state.posts.reduce((categories, post) => {
+      if (!post.category) return categories
       let unique = true
       for (let index in categories) {
         if (categories[index].slug === post.category.slug) {
