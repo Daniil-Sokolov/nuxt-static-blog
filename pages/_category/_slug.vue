@@ -75,16 +75,13 @@ export default {
   mounted: function() {
     window.addEventListener('keypress', this.handleKeyPress)
     document.querySelectorAll('code').forEach(function(e) {
-      console.log('highlighting ', e)
       hljs.highlightBlock(e)
     })
   },
   beforeDestroy: function() {
     window.removeEventListener('keypress', this.handleKeyPress)
-    console.log('DESTROYED')
   },
   async asyncData(context) {
-    console.log(context, this)
     const slug = context.params.slug
     const category = context.params.category
     const posts = context.store.state.posts.filter(p => p.category.slug === category)

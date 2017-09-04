@@ -1,3 +1,5 @@
+const axios = require('axios')
+
 module.exports = {
   /*
   ** Headers of the page
@@ -24,10 +26,12 @@ module.exports = {
     '~/assets/blog.css'
   ],
   generate: {
-    routes: [
-      '/japan/hello-world',
-      '/japan'
-    ]
+    routes: function () {
+      return axios.get('http://localhost:3000/api/routes')
+      .then((res) => {
+        return res.data
+      })
+    }
   },
   /*
   ** Build configuration

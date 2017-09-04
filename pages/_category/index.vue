@@ -29,7 +29,7 @@ export default {
   },
   async asyncData(context) {
     const categorySlug = context.params.category
-    const posts = context.store.state.posts.filter(p => { console.log(p.category.slug); return p.category.slug === categorySlug })
+    const posts = context.store.state.posts.filter(p => p.category.slug === categorySlug )
     const category = posts[0].category
     return {
       category,

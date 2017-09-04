@@ -25,8 +25,7 @@ const createStore = () => {
   return new Vuex.Store({
     state: {
       posts: [],
-      categories: [],
-      token: ''
+      categories: []
     },
     actions: {
       async nuxtServerInit({ commit }, { req }) {
@@ -40,27 +39,6 @@ const createStore = () => {
           commit('SET_TOKEN', req.cookies.token)
         }
       },
-      saveCategory(context, body) {
-        return post('/categories', body)
-      },
-      savePost(context, body) {
-        return post('/posts', body)
-      },
-      login({ commit }, password) {
-        return post('/login', { password })
-      },
-      logout({ commit }) {
-        // TODO LOGOUT
-      },
-      verifyToken({ commit }, token) {
-        return post('/verifytoken', { token })
-          .then(res => {
-            return true
-          })
-          .catch(e => {
-            return false
-          })
-      }
     },
     mutations: {
       SET_POSTS(state, data) {
@@ -68,16 +46,6 @@ const createStore = () => {
       },
       SET_CATEGORIES(state, data) {
         state.categories = data
-      },
-      SET_TOKEN_COOKIE: function(state, token) {
-        if (typeof document !== 'undefined') {
-          let exp = new Date()
-          exp.setDate(exp.getDate() + 14)
-          document.cookie = `token=${token};expires=${exp.toUTCString()}`
-        }
-      },
-      SET_TOKEN: function(state, token) {
-        state.token = token
       }
     }
   })

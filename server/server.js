@@ -60,6 +60,20 @@ app.get('/api/posts', (req, res) => {
   })
 })
 
+app.get('/api/routes', (req, res) => {
+  Post.getPosts(function(err, response) {
+    if (err) return res.json([])
+    let routes = []
+    for (let index in response) {
+      if (routes.indexOf(response[index].category.slug === -1)){
+        routes.push('/'+response[index].category.slug)
+      }
+      routes.push('/'+response[index].category.slug+'/'+response[index].slug)
+    }
+    res.json(routes)
+  })
+})
+
 app.post('/api/posts', authRoute, (req, res) => {
   const data = new Post({
     title: req.body.title,

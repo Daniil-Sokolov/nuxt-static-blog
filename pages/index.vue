@@ -16,11 +16,6 @@
         <p>{{ category.description }}</p>
       </div>
     </section>
-    <footer>
-      <section>
-        <nuxt-link :to="'/admin'">admin</nuxt-link>
-      </section>
-    </footer>
   </div>
 </template>
 
