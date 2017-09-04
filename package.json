@@ -12,7 +12,7 @@
     "serve": "nuxt start",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint",
-    "deploy": "push-dir --dir=dist --remote pushdir --cleanup"
+    "deploy": "push-dir --dir=dist --remote pushdir --branch=master --cleanup"
   },
   "dependencies": {
     "axios": "^0.16.2",
