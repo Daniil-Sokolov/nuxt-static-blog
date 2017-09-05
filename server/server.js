@@ -3,8 +3,9 @@ const bodyParser = require('body-parser')
 const app = require('express')()
 
 const Datastore = require('nedb')
-const categories = new Datastore({ filename: './server/data/categories', autoload: true })
-const posts = new Datastore({ filename: './server/data/posts', autoload: true})
+let db = {}
+db.categories = new Datastore({ filename: './server/data/categories', autoload: true })
+db.posts = new Datastore({ filename: './server/data/posts', autoload: true})
 
 app.use(bodyParser.json())
 
@@ -14,7 +15,7 @@ const slugify = (s) => {
 }
 
 app.get('/api/posts', (req, res) => {
-  posts.find({}, (err, docs) => {
+  db.posts.find({}, (err, docs) => {
     if (err) return res.status(404).json({ success: false, error: err })
     return res.json(docs)
   })
@@ -31,28 +32,43 @@ app.post('/api/posts', (req, res) => {
     sections: req.body.sections
   }
 
-  posts.insert(data, (err, newDoc) => {
+  db.posts.insert(data, (err, newDoc) => {
     if (err) res.status(404).json({ success: false, error: err })
     res.json(newDoc)
   })
 })
 
-app.get('/api/routes', (req, res) => {
-  posts.find({}, (err, response) => {
-    if (err) return res.json([])
+const getter = (db, query) => {
+  return new Promise((resolve, reject) => {
+    db.find(query, (err, res) => {
+      if (err) return reject(err)
+      return resolve(res)
+    })
+  })
+}
+
+app.get('/api/routes', async (req, res) => {
+
+  try{
+    const posts = await getter(db.posts, {})
     let routes = []
-    for (let index in response) {
-      if (routes.indexOf(response[index].category.slug === -1)){
-        routes.push('/'+response[index].category.slug)
+    for (let index in posts) {
+      let category = await getter(db.categories, { _id: posts[index].category })
+      category = category[0] // should use findOne instead ?
+      if (routes.indexOf(category.slug === -1)){
+        routes.push('/'+category.slug)
       }
-      routes.push('/'+response[index].category.slug+'/'+response[index].slug)
+      routes.push('/'+category.slug+'/'+posts[index].slug)
     }
     res.json(routes)
-  })
+  }catch(e){
+    console.log('failed to get routes:', e)
+    res.status(404).json([])
+  }
 })
 
 app.get('/api/categories', (req, res) => {
-  categories.find({}, (err, docs) => {
+  db.categories.find({}, (err, docs) => {
     if (err) return res.status(404).json({ success: false, error: err })
     return res.json(docs)
   })
@@ -66,7 +82,7 @@ app.post('/api/categories', (req, res) => {
     banner: req.body.banner
   }
 
-  categories.insert(data, (err, newDoc) => {
+  db.categories.insert(data, (err, newDoc) => {
     if (err) res.status(404).json({ success: false, error: err })
     res.json(newDoc)
   })
