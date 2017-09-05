@@ -17,6 +17,9 @@
         <p>{{ category.description }}</p>
       </div>
     </section>
+    <section class="footer">
+      <a href="https://github.com/jonniek/nuxt-static-blog" target="_blank" rel="noopener">About blog on github</a>
+    </section>
   </div>
 </template>
 
@@ -82,6 +85,10 @@ h2{
   text-align: center; 
   max-width: 350px;
   margin:auto;
+}
+.footer{
+  margin: 20px auto;
+  text-align: center;
 }
 @media (max-width: 780px){
   .category{

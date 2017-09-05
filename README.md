@@ -1,6 +1,6 @@
 ## Jonniek homepage
 
-A nuxt.js project that generates static blog content and deploys to github pages. Database is stored locally for NeDB.
+A nuxt.js project that generates static blog content and deploys to github pages. Database is stored locally for NeDB. This project is work in progress and very basic at the moment.
 
 ### Installation
 ```
