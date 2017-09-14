@@ -3,7 +3,7 @@
     <div class='backlink'>
       <nuxt-link
         class="novisited"
-        :to="'/'+post.category.slug"
+        :to="'/blog/'+post.category.slug"
       >Back to {{ post.category.name}}</nuxt-link>
     </div>
     <section class="header">
@@ -33,23 +33,37 @@
 </template>
 
 <script>
-
+/*
 import hljs from 'highlight.js/lib/highlight'
 import 'highlight.js/styles/pojoaque.css'
 ['javascript', 'python', 'bash', 'css', 'lua'].forEach((langName) => {
   const langModule = require(`highlight.js/lib/languages/${langName}`)
   hljs.registerLanguage(langName, langModule)
-})
+}) */
 
 export default {
   transition(to, from) {
-    if (!from || from.name === 'index') {
-      return 'slide-up'
-    }
-    if (to.name === 'category' || to.name === 'index') {
-      return 'slide-down'
-    }
     return 'slide-up'
+  },
+  head() {
+    return {
+      title: `${this.post.title} | ${this.post.category.name} | Jonniek blog`,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.post.subtitle
+        },
+        {
+          propery: 'og:description',
+          content: this.post.subtitle
+        },
+        {
+          property: 'og:title',
+          content: `${this.post.title} | ${this.post.category.name}`
+        }
+      ]
+    }
   },
   methods: {
     handleKeyPress(e) {
@@ -74,9 +88,9 @@ export default {
   },
   mounted: function() {
     window.addEventListener('keypress', this.handleKeyPress)
-    document.querySelectorAll('code').forEach(function(e) {
+    /* document.querySelectorAll('code').forEach(function(e) {
       hljs.highlightBlock(e)
-    })
+    }) */
   },
   beforeDestroy: function() {
     window.removeEventListener('keypress', this.handleKeyPress)

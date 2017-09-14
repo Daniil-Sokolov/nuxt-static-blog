@@ -1,16 +1,16 @@
 <template>
   <div class="transition main">
-    <div class='backlink'><nuxt-link class="novisited" :to="'/'">Back home</nuxt-link></div>
+    <div class='backlink'><nuxt-link class="novisited" :to="'/blog/'">Back to blog</nuxt-link></div>
     <h1 class="big">{{ category.name }}</h1>
     <img class="mainbanner" :src="'/'+category.banner" alt="">
-    <p class="description">{{ category.description }}</p>
     <section>
+      <p class="description">{{ category.description }}</p>
       <hr>
       <div class="article transition" v-for="post in posts">
-        <nuxt-link :to="'/'+post.category.slug+'/'+post.slug">
+        <nuxt-link :to="'/blog/'+post.category.slug+'/'+post.slug">
           <img :src="'/'+post.banner" alt=''>
         </nuxt-link>
-        <div class="title"><nuxt-link :to="'/'+post.category.slug+'/'+post.slug">
+        <div class="title"><nuxt-link :to="'/blog/'+post.category.slug+'/'+post.slug">
           <h3>{{ post.title }}</h3>
         </nuxt-link></div>
         <p>{{ post.subtitle }}</p>
@@ -23,13 +23,30 @@
 <script>
 export default {
   transition(to, from) {
-    if (!from || from.name === 'index') {
-      return 'slide-up'
-    }
-    if (to.name === 'index') {
+    if (!from || from.name === 'blog') {
       return 'slide-up'
     }
     return 'slide-down'
+  },
+  head() {
+    return {
+      title: this.category.name + ' | Jonniek blog',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.category.description
+        },
+        {
+          propery: 'og:description',
+          content: this.category.description
+        },
+        {
+          property: 'og:title',
+          content: this.category.name + ' | Jonniek blog'
+        }
+      ]
+    }
   },
   async asyncData(context) {
     const categorySlug = context.params.category
@@ -47,7 +64,7 @@ export default {
 .main {
   text-align: center;
 }
-.section {
+section {
   text-align: left;
 }
 h1{

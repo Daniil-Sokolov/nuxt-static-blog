@@ -56,9 +56,9 @@ app.get('/api/routes', async (req, res) => {
       let category = await getter(db.categories, { _id: posts[index].category })
       category = category[0] // should use findOne instead ?
       if (routes.indexOf(category.slug === -1)){
-        routes.push('/'+category.slug)
+        routes.push('/blog/'+category.slug)
       }
-      routes.push('/'+category.slug+'/'+posts[index].slug)
+      routes.push('/blog/'+category.slug+'/'+posts[index].slug)
     }
     res.json(routes)
   }catch(e){
