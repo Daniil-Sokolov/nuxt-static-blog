@@ -7,7 +7,7 @@
       <p class="description">{{ category.description }}</p>
       <hr>
       <div class="article transition" v-for="post in posts">
-        <nuxt-link :to="'/blog/'+post.category.slug+'/'+post.slug">
+        <nuxt-link :to="'/blog/'+post.category.slug+'/'+post.slug" v-if="post.banner">
           <img :src="'/'+post.banner" alt=''>
         </nuxt-link>
         <div class="title"><nuxt-link :to="'/blog/'+post.category.slug+'/'+post.slug">
