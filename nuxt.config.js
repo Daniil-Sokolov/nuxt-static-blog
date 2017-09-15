@@ -13,10 +13,14 @@ module.exports = {
         hid: 'description',
         name: 'description',
         content: 'Welcome to my simple cozy homepage'
-      }
+      },
+      { name: 'theme-color', content: '#35495e'}
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'manifest', href: './manifest.json' },
+      { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png'},
+      { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png'},
     ]
   },
   /*
