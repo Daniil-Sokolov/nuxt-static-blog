@@ -132,4 +132,74 @@ a:hover{
 a.disabled:hover{
   opacity: 1;
 }
+.nomargin{margin:0;}
 .pull-right{ float:right; }
+.aligncenter{text-align:center;}
+.blu { color: #35495e; }
+.mainbanner {
+  margin: auto;
+  display: block;
+}
+.megatitle{
+  display: block;
+  text-align: center;
+  font-size: 50px;
+  font-size: 9vw;
+  font-weight: 400;
+  color: #35495e;
+  letter-spacing: 1px;
+  margin: 20px;
+}
+.bold {
+  font-weight: bold;
+}
+@media (min-width: 1100px){
+  .megatitle{
+    font-size: 100px;
+  }
+}
+@media (max-width: 580px){
+  .megatitle{
+    font-size: 40px;
+  }
+}
+.description{
+  max-width: 400px;
+  margin: 30px auto 60px auto;
+  font-size: 1em;
+  text-align: center;
+  font-weight: normal;
+}
+.footer{
+  margin: 20px auto;
+  text-align: center;
+}
+.item{
+  display: inline-block;
+  width: 33%;
+  vertical-align: top;
+  padding: 10px 15px;
+}
+.item .title{
+  text-align: center;
+  margin:10px 0;
+  font-size: 20px;
+}
+.item .title a{
+  display: inline-block;
+}
+.item p{
+  text-align: center; 
+  max-width: 350px;
+  margin:auto;
+}
+@media (max-width: 780px){
+  .article{
+    width: 50%;
+  }
+}
+@media (max-width: 580px){
+  .item{
+    width: 100%;
+  }
+}
