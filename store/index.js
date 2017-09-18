@@ -30,22 +30,21 @@ const createStore = () => {
     actions: {
       nuxtServerInit({ commit }, { req }) {
         return axios.all([get('/posts'), get('/categories')])
-        .then(axios.spread(function(posts_res, category_res){
-          let pdata = posts_res.data
-          let cdata = category_res.data
+          .then(axios.spread(function(postsRes, catRes) {
+            let pdata = postsRes.data
+            let cdata = catRes.data
 
-          let categories = {}
-          for (let index in cdata) {
-            categories[cdata[index]._id] = cdata[index]
-          }
+            let categories = {}
+            for (let index in cdata) {
+              categories[cdata[index]._id] = cdata[index]
+            }
 
-          for (let index in pdata) {
-            pdata[index].category = categories[pdata[index].category]
-          }
-          commit('SET_POSTS', pdata)
-          commit('SET_CATEGORIES', cdata)
-        }))
-
+            for (let index in pdata) {
+              pdata[index].category = categories[pdata[index].category]
+            }
+            commit('SET_POSTS', pdata)
+            commit('SET_CATEGORIES', cdata)
+          }))
       },
       saveCategory(context, body) {
         return post('/categories', body)

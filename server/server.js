@@ -5,7 +5,7 @@ const app = require('express')()
 const Datastore = require('nedb')
 let db = {}
 db.categories = new Datastore({ filename: './server/data/categories', autoload: true })
-db.posts = new Datastore({ filename: './server/data/posts', autoload: true})
+db.posts = new Datastore({ filename: './server/data/posts', autoload: true })
 
 app.use(bodyParser.json())
 
@@ -47,21 +47,20 @@ const getter = (db, query) => {
   })
 }
 
-app.get('/api/routes', async (req, res) => {
-
-  try{
+app.get('/api/routes', async(req, res) => {
+  try {
     const posts = await getter(db.posts, {})
     let routes = []
     for (let index in posts) {
       let category = await getter(db.categories, { _id: posts[index].category })
       category = category[0] // should use findOne instead ?
-      if (routes.indexOf(category.slug === -1)){
-        routes.push('/blog/'+category.slug)
+      if (routes.indexOf(category.slug === -1)) {
+        routes.push('/blog/' + category.slug)
       }
-      routes.push('/blog/'+category.slug+'/'+posts[index].slug)
+      routes.push(`/blog/${category.slug}/${posts[index].slug}`)
     }
     res.json(routes)
-  }catch(e){
+  } catch (e) {
     console.log('failed to get routes:', e)
     res.status(404).json([])
   }

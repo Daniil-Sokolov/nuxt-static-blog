@@ -26,7 +26,7 @@
       <h2>{{ post.subtitle }}</h2>
       <hr>
 
-      <div class='post-meta'>{{ new Date(post.created).toLocaleDateString() }}</div>
+      <div class='post-meta'>{{ formatDate(new Date(post.created)) }}</div>
     </section>
     <section :class="section.width" v-for="section in post.sections" v-html="section.content"></section>
   </div>
@@ -84,6 +84,24 @@ export default {
           }
         })
       }
+    },
+    formatDate(date) {
+      const months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ]
+      const month = date.getUTCMonth() + 1
+      return `${date.getUTCDate()} ${months[month]} ${date.getUTCFullYear()}`
     }
   },
   mounted: function() {
@@ -112,11 +130,9 @@ export default {
     return ({
       previous,
       next,
-      post: post
+      post
     })
   }
 }
 </script>
 
-<style scoped>
-</style>
