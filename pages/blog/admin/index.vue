@@ -10,8 +10,7 @@
           <h2>{{ formData.subtitle }}</h2>
           <hr>
           <div class='post-meta'>
-          {{ new Date().toLocaleDateString() }} <nuxt-link class="novisited pull-right" :to="'#'">{{ formData.category.name }}</nuxt-link>
-
+            {{ date.getUTCDate() + ' Month ' + date.getUTCFullYear() }}
           </div>
         </section>
         <section :class="formData.sections[index].width" v-bind:key="index" v-for="(section, index) in formData.sections" v-html="formData.sections[index].content">
@@ -33,7 +32,9 @@
         
         <div v-if="toggleNewCategory">
           <label>Category name
-          <input v-model="newCategory.name"></label>
+          <input v-model="newCategory.name" v-on:keyup="setcatslug()"></label>
+          <label>Category url slug
+          <input v-model="newCategory.slug"></label>
           <label>Category banner image name
           <input v-model="newCategory.banner"></label>
           <label>Category description
@@ -42,26 +43,35 @@
         </div>
 
       </div>
+      <hr>
       <div class="formfield">
         <label>Title
-        <input v-model="formData.title" placeholder="title"></label>
+        <input v-model="formData.title" v-on:keyup="setslug()"></label>
+      </div>
+      <div class="formfield">
+        <label>Url slug
+        <input v-model="formData.slug"></label>
       </div>
       <div class="formfield">
         <label>Subtitle
-        <input v-model="formData.subtitle" placeholder="subtitle"></label>
+        <input v-model="formData.subtitle"></label>
       </div>
-      <div class="formfield" v-bind:key="index" v-for="(section, index) in formData.sections">
-        <label :for="'s'+index">Section {{ index + 1 }} content</label>
-        <select v-model="formData.sections[index].width">
-          <option value="normal" selected>normal</option>
-          <option value="wide">wide</option>
-          <option value="full">full-width</option>
-        </select>
-        <button v-on:click="removeSection(index)" class="danger">delete</button>
-        <textarea :id="'s'+index" v-model="formData.sections[index].content" placeholder="html"></textarea>
+      <hr>
+      <div class="formfield">
+        <label class="blocklabel">Content</label>
+        <div class="content-section" v-bind:key="index" v-for="(section, index) in formData.sections">
+          <label :for="'s'+index">Section {{ index + 1 }} content</label>
+          <select v-model="formData.sections[index].width">
+            <option value="normal" selected>normal</option>
+            <option value="wide">wide</option>
+            <option value="full">full-width</option>
+          </select>
+          <button v-on:click="removeSection(index)" class="danger">delete</button>
+          <textarea :id="'s'+index" v-model="formData.sections[index].content" placeholder="html content"></textarea>
+        </div>
+        <button class="addsection" v-on:click="addSection">Add section</button>
       </div>
-      <button v-on:click="addSection">Add section</button>
-      <button v-on:click="createPost">Create post</button>
+      <button class="create" v-on:click="createPost">Create post</button>
     </div>
   </div>
 </template>
@@ -72,6 +82,7 @@ export default {
   data: () => ({
     formData: {
       title: '',
+      slug: '',
       subtitle: '',
       sections: [
         { width: 'normal', content: '' }
@@ -80,12 +91,24 @@ export default {
       published: true
     },
     toggleNewCategory: false,
-    newCategory: { name: '', description: '', banner: '' },
+    newCategory: { name: '', slug: '', description: '', banner: '' },
     categories: [],
-    error: ''
+    error: '',
+    date: new Date()
   }),
+  watch: {
+    'formData': {
+      handler: function() {
+        this.saveProgress()
+      },
+      deep: true
+    }
+  },
   asyncData(context) {
     return { categories: context.store.state.categories || [] }
+  },
+  mounted() {
+    this.loadProgress()
   },
   methods: {
     resetPost() {
@@ -104,12 +127,12 @@ export default {
       if (newCategory.name === '') return
       const body = { ...newCategory }
       this.$store.dispatch('saveCategory', body)
-      .then(res => {
-        console.log(res)
-        this.categories.push(res.data)
-        this.formData.category = res.data._id
-        this.toggleNewCategory = false
-      }).catch(console.warn)
+        .then(res => {
+          console.log(res)
+          this.categories.push(res.data)
+          this.formData.category = res.data._id
+          this.toggleNewCategory = false
+        }).catch(console.warn)
     },
     addSection() {
       this.formData.sections.push({ width: 'normal', content: '' })
@@ -134,6 +157,29 @@ export default {
           console.warn(e)
           this.error = e
         })
+    },
+    setcatslug() {
+      this.newCategory.slug = this.slugify(this.newCategory.name)
+    },
+    setslug() {
+      this.formData.slug = this.slugify(this.formData.title)
+    },
+    slugify(s) {
+      if (!typeof s === 'string' || !s) return s
+      return s.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s/g, '-')
+    },
+    saveProgress(formdata) {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('formdata', JSON.stringify(formdata || this.formData))
+      }
+    },
+    loadProgress() {
+      if (typeof localStorage !== 'undefined') {
+        const data = localStorage.getItem('formdata')
+        if (data !== null) {
+          this.formData = JSON.parse(data)
+        }
+      }
     }
   }
 }
@@ -162,5 +208,19 @@ section{
 article{
   border-left:3px solid #ccc;
   border-right: 3px solid #ccc
+}
+.formfield {
+  margin: 20px 0;
+}
+.blocklabel {
+  display: block;
+}
+button {
+  margin: 10px 0;
+}
+.create{
+  display: block;
+  margin: 30px auto 30px auto;
+  max-width: 200px;
 }
 </style>

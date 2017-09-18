@@ -9,11 +9,6 @@ db.posts = new Datastore({ filename: './server/data/posts', autoload: true })
 
 app.use(bodyParser.json())
 
-const slugify = (s) => {
-  if (!typeof s === 'string' || !s) return s
-  return s.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s/g, '-')
-}
-
 app.get('/api/posts', (req, res) => {
   db.posts.find({}, (err, docs) => {
     if (err) return res.status(404).json({ success: false, error: err })
@@ -24,7 +19,7 @@ app.get('/api/posts', (req, res) => {
 app.post('/api/posts', (req, res) => {
   const data = {
     title: req.body.title,
-    slug: slugify(req.body.title),
+    slug: req.body.slug,
     created: new Date(),
     subtitle: req.body.subtitle,
     category: req.body.category,
@@ -76,7 +71,7 @@ app.get('/api/categories', (req, res) => {
 app.post('/api/categories', (req, res) => {
   const data = {
     name: req.body.name,
-    slug: slugify(req.body.name),
+    slug: req.body.slug,
     description: req.body.description,
     banner: req.body.banner
   }
