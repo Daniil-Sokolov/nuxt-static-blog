@@ -100,7 +100,7 @@ export default {
         'November',
         'December'
       ]
-      const month = date.getUTCMonth() + 1
+      const month = date.getUTCMonth()
       return `${date.getUTCDate()} ${months[month]} ${date.getUTCFullYear()}`
     }
   },
