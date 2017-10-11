@@ -10,7 +10,7 @@
           <h2>{{ formData.subtitle }}</h2>
           <hr>
           <div class='post-meta'>
-            {{ date.getUTCDate() + ' Month ' + date.getUTCFullYear() }}
+            {{ 'Month ' + date.getUTCDate() + ', ' + date.getUTCFullYear() }}
           </div>
         </section>
         <section :class="formData.sections[index].width" v-bind:key="index" v-for="(section, index) in formData.sections" v-html="formData.sections[index].content">

@@ -39,6 +39,9 @@ module.exports = {
         .then((res) => res.data)
     }
   },
+  modules: [
+    ['@nuxtjs/google-analytics', { ua: 'UA-107119603-1' }]
+  ],
   /*
   ** Build configuration
   */

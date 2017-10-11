@@ -92,9 +92,11 @@ audio:not([controls]) {
 }
 
 img {
+  display: block;
   border-style: none;
   max-width: 100%;
   height: auto;
+  margin: auto;
 }
 
 svg:not(:root) {

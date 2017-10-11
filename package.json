@@ -15,6 +15,7 @@
     "deploy": "push-dir --dir=dist --remote pushdir --branch=master --cleanup"
   },
   "dependencies": {
+    "@nuxtjs/google-analytics": "^1.0.0",
     "axios": "^0.16.2",
     "body-parser": "^1.17.2",
     "cross-env": "^5.0.5",
