@@ -67,7 +67,7 @@ export default {
           content: this.post.subtitle
         },
         {
-          propery: 'og:description',
+          property: 'og:description',
           content: this.post.subtitle
         },
         {
