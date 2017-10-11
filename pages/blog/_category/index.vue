@@ -38,7 +38,7 @@ export default {
           content: this.category.description
         },
         {
-          propery: 'og:description',
+          property: 'og:description',
           content: this.category.description
         },
         {

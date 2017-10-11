@@ -38,7 +38,7 @@ export default {
           content: 'I write about stuff I find interesting or useful'
         },
         {
-          propery: 'og:description',
+          property: 'og:description',
           content: 'I write about stuff I find interesting or useful'
         },
         {
