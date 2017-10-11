@@ -30,3 +30,10 @@ code {
 .nextlink{
   float: right;
 }
+.fat{
+  padding-top:40px;
+  padding-bottom: 40px;
+}
+.navlinks{
+  min-height: 40px;
+}

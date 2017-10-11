@@ -7,20 +7,19 @@
       >Back to {{ post.category.name}}</nuxt-link>
     </div>
     <section class="header">
+      <div class="navlinks">
+        <nuxt-link
+          class="prevlink novisited"
+          v-if="previous"
+          :to="{ name: 'blog-category-slug', params: { slug: previous.slug, animation: 'slide-right' }}"
+        >&lt;- {{ previous.title }}</nuxt-link>
 
-      <nuxt-link
-        class="prevlink novisited"
-        v-if="previous"
-        :to="{ name: 'category-slug', params: { slug: previous, animation: 'slide-right' }}"
-      >&lt; Prev</nuxt-link>
-      <a v-else class="disabled prevlink">&lt; Prev</a>
-
-      <nuxt-link
-        class="nextlink novisited"
-        v-if="next"
-        :to="{ name: 'category-slug', params: { slug: next, animation: 'slide-left' }}"
-      >Next &gt;</nuxt-link>
-      <a v-else class="disabled nextlink">Next &gt;</a>
+        <nuxt-link
+          class="nextlink novisited"
+          v-if="next"
+          :to="{ name: 'blog-category-slug', params: { slug: next.slug, animation: 'slide-left' }}"
+        >{{ next.title }} -&gt;</nuxt-link>
+      </div>
 
       <h1>{{ post.title }}</h1>
       <h2>{{ post.subtitle }}</h2>
@@ -29,6 +28,19 @@
       <div class='post-meta'>{{ formatDate(new Date(post.created)) }}</div>
     </section>
     <section :class="section.width" v-for="section in post.sections" v-html="section.content"></section>
+    <section class="fat">
+      <nuxt-link
+        class="prevlink novisited"
+        v-if="previous"
+        :to="{ name: 'blog-category-slug', params: { slug: previous.slug, animation: 'slide-right' }}"
+      >&lt;- {{ previous.title }}</nuxt-link>
+
+      <nuxt-link
+        class="nextlink novisited"
+        v-if="next"
+        :to="{ name: 'blog-category-slug', params: { slug: next.slug, animation: 'slide-left' }}"
+      >{{ next.title }} -&gt;</nuxt-link>
+    </section>
   </div>
 </template>
 
@@ -43,7 +55,7 @@ import 'highlight.js/styles/pojoaque.css'
 
 export default {
   transition(to, from) {
-    return 'slide-up'
+    return 'animation' in to.params ? to.params.animation : 'slide-up'
   },
   head() {
     return {
@@ -69,17 +81,17 @@ export default {
     handleKeyPress(e) {
       if (e.key === 'ArrowRight' && this.next) {
         this.$router.push({
-          name: 'category-slug',
+          name: 'blog-category-slug',
           params: {
-            slug: this.next,
+            slug: this.next.slug,
             animation: 'slide-left'
           }
         })
       } else if (e.key === 'ArrowLeft' && this.previous) {
         this.$router.push({
-          name: 'category-slug',
+          name: 'blog-category-slug',
           params: {
-            slug: this.previous,
+            slug: this.previous.slug,
             animation: 'slide-right'
           }
         })
@@ -124,9 +136,9 @@ export default {
     if (index === -1) return
 
     const post = posts[index]
-    const previous = index > 0 ? posts[index - 1].slug : null
+    const previous = index > 0 ? posts[index - 1] : null
     const next = posts.length > index + 1
-      ? posts[index + 1].slug : null
+      ? posts[index + 1] : null
     return ({
       previous,
       next,

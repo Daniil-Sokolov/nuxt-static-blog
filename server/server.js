@@ -10,7 +10,7 @@ db.posts = new Datastore({ filename: './server/data/posts', autoload: true })
 app.use(bodyParser.json())
 
 app.get('/api/posts', (req, res) => {
-  db.posts.find({}, (err, docs) => {
+  db.posts.find({}).sort({ created: 1 }).exec((err, docs) => {
     if (err) return res.status(404).json({ success: false, error: err })
     return res.json(docs)
   })
