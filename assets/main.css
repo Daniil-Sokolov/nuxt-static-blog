@@ -91,12 +91,12 @@ audio:not([controls]) {
   height: 0;
 }
 
-img {
+img, video {
   display: block;
   border-style: none;
   max-width: 100%;
   height: auto;
-  margin: auto;
+  margin: 5px auto;
 }
 
 svg:not(:root) {
