@@ -14,7 +14,6 @@
       </div>
     </section>
     <section class="footer">
-      <a href="https://github.com/jonniek/nuxt-static-blog" target="_blank" rel="noopener">About page on github</a>
     </section>
   </div>
 </template>
