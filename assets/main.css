@@ -186,6 +186,7 @@ a.disabled:hover{
   text-align: center;
   margin:10px 0;
   font-size: 20px;
+  line-height: 130%;
 }
 .item .title a{
   display: inline-block;
